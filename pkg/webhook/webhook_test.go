@@ -28,6 +28,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/intel/multus-cni/types"
+	netv1 "github.com/k8snetworkplumbingwg/network-attachment-definition-client/pkg/apis/k8s.cni.cncf.io/v1"
 )
 
 var _ = Describe("Webhook", func() {
@@ -128,7 +129,7 @@ var _ = Describe("Webhook", func() {
 	})
 
 	DescribeTable("Network Attachment Definition validation",
-		func(in types.NetworkAttachmentDefinition, out bool, shouldFail bool) {
+		func(in netv1.NetworkAttachmentDefinition, out bool, shouldFail bool) {
 			actualOut, err := validateNetworkAttachmentDefinition(in)
 			Expect(actualOut).To(Equal(out))
 			if shouldFail {
@@ -137,13 +138,13 @@ var _ = Describe("Webhook", func() {
 		},
 		Entry(
 			"empty config",
-			types.NetworkAttachmentDefinition{},
+			netv1.NetworkAttachmentDefinition{},
 			false, true,
 		),
 		Entry(
 			"invalid name",
-			types.NetworkAttachmentDefinition{
-				Metadata: metav1.ObjectMeta{
+			netv1.NetworkAttachmentDefinition{
+				ObjectMeta: metav1.ObjectMeta{
 					Name: "some?invalid?name",
 				},
 			},
